@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Sudoku</string>
+    <string name="list">List</string>
+    <string name="game">Game</string>
 </resources>
