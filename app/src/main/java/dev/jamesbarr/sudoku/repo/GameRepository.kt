@@ -9,7 +9,7 @@ import kotlin.random.Random
 
 class GameRepository(context: Context) {
 
-  var game: SudokuGame = generateGame(0)
+  var game: SudokuGame = generateGame(0L)
   var selectedCell: CellPosition? = null
 
   fun generateGame(seed: Long = Random.nextLong()): SudokuGame {
@@ -17,5 +17,10 @@ class GameRepository(context: Context) {
     return SudokuGame(pair.first as IntBoard, seed).apply {
       solvedBoard = pair.second as IntBoard
     }
+  }
+
+  fun startGame(gameId: Long): SudokuGame {
+    game = generateGame(seed = gameId)
+    return game
   }
 }

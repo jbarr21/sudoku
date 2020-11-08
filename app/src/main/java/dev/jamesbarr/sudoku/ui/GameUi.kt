@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.navigation.NavController
@@ -17,17 +18,22 @@ import dev.jamesbarr.sudoku.viewmodel.GameViewModel
 fun GameUi(
   gameViewModel: GameViewModel,
   navController: NavController,
-  gameId: Int = 0
+  gameId: Long = 0
 ) {
   Scaffold(
     topBar = {
       TopAppBar(
-        title = { Text("Sudoku") },
+        title = { Text("Game #$gameId") },
         contentColor = MaterialTheme.colors.onSurface,
         backgroundColor = MaterialTheme.colors.primaryVariant,
         navigationIcon = {
           IconButton(onClick = { navController.popBackStack() }) {
             Icon(asset = Icons.Default.ArrowBack)
+          }
+        },
+        actions = {
+          IconButton(onClick = gameViewModel::restartGame) {
+            Icon(asset = Icons.Default.Refresh)
           }
         }
       )
@@ -52,7 +58,7 @@ fun GameUi(
             message = "You solved the puzzle!",
             primaryLabel = "New Game",
             secondaryLabel = "Done",
-            onConfirmListener = gameViewModel::startNewGame,
+            onConfirmListener = { navController.popBackStack() },
             onDismissListener = gameViewModel::dismissDialog
           )
         }

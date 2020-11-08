@@ -29,10 +29,20 @@ class GameViewModel(private val gameRepository: GameRepository) : ViewModel() {
     "S" to this::solve
   )
 
-  fun startNewGame() {
+  fun startNewGame(gameId: Long) {
     isGameOver = false
-    gameRepository.game = gameRepository.generateGame()
+    gameRepository.game = gameRepository.startGame(gameId)
     board = gameRepository.game.board
+  }
+
+  fun restartGame() {
+    isGameOver = false
+    board = gameRepository.game.board.copy().apply {
+      toArray()
+        .indices
+        .filterNot { isStartingValue(it) }
+        .forEach { clearValues(it) }
+    }
   }
 
   fun onCellClick(pos: CellPosition) {
