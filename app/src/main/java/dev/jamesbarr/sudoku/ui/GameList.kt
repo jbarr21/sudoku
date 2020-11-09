@@ -1,8 +1,12 @@
 package dev.jamesbarr.sudoku.ui
 
+import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.FloatingActionButton
@@ -16,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
 import androidx.ui.tooling.preview.Preview
@@ -23,7 +28,7 @@ import dev.jamesbarr.sudoku.R
 import dev.jamesbarr.sudoku.viewmodel.GameViewModel
 import kotlin.random.Random.Default.nextLong
 
-const val NUM_COLUMNS = 1
+const val NUM_COLUMNS = 2
 
 @Composable
 fun GameList(
@@ -50,26 +55,48 @@ fun GameList(
     bodyContent = {
       val numGames = gameViewModel.games.size
       if (numGames == 0) {
-        Box(modifier = Modifier.fillMaxSize()) {
-          CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-        }
+        GameListLoading()
       } else {
-        LazyColumnFor(items = (0 until (gameViewModel.games.size / NUM_COLUMNS)).toList()) { row ->
-          Row(modifier = Modifier.fillParentMaxWidth()) {
-            repeat(NUM_COLUMNS) { col ->
-              val gameId = (row * NUM_COLUMNS + col).toLong()
-              Box(modifier = Modifier.weight(0.5f)) {
-                GameCard(
-                  game = gameViewModel.games[row * NUM_COLUMNS + col],
-                  onClick = { navController.launchGame(gameId) }
-                )
-              }
-            }
-          }
-        }
+        GameListData(gameViewModel, navController)
       }
     }
   )
+}
+
+@Composable
+fun GameListData(
+  gameViewModel: GameViewModel,
+  navController: NavController
+) {
+  LazyColumnFor(items = (0 until (gameViewModel.games.size / NUM_COLUMNS)).toList()) { row ->
+    Row(modifier = Modifier.fillMaxWidth()) {
+      repeat(NUM_COLUMNS) { col ->
+        val gameId = (row * NUM_COLUMNS + col).toLong()
+        Box(modifier = Modifier.weight(0.5f)) {
+          GameCard(
+            game = gameViewModel.games[row * NUM_COLUMNS + col],
+            onClick = { navController.launchGame(gameId) }
+          )
+        }
+      }
+    }
+  }
+}
+
+@Composable
+fun GameListLoading() {
+  Box(modifier = Modifier.fillMaxSize()) {
+    Column(
+      horizontalAlignment = Alignment.CenterHorizontally,
+      modifier = Modifier.align(Alignment.Center)
+    ) {
+      CircularProgressIndicator()
+      Text(
+        text = "Generating games...",
+        modifier = Modifier.padding(top = 8.dp)
+      )
+    }
+  }
 }
 
 private fun NavController.launchGame(gameId: Long) = navigate(Screen.Game.routeFor(gameId))

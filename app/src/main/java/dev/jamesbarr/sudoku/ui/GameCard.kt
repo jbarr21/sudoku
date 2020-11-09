@@ -2,7 +2,9 @@ package dev.jamesbarr.sudoku.ui
 
 import androidx.compose.foundation.Text
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Card
@@ -23,10 +25,10 @@ fun GameCard(
   Card(
     modifier = Modifier
       .fillMaxWidth()
-      .clickable(onClick = onClick)
       .padding(8.dp)
+      .clickable(onClick = onClick)
   ) {
-    Column(modifier = Modifier.padding(8.dp)) {
+    Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
       Text(
         text = "Game #${game.id + 1}",
         style = MaterialTheme.typography.h6,
@@ -40,7 +42,12 @@ fun GameCard(
 @Preview
 @Composable
 fun GameCardPreview() {
-  GameCard(
-    game = GameRepository(ContextAmbient.current).generateGame(0)
-  )
+  val game = GameRepository(ContextAmbient.current).game
+  Row(modifier = Modifier.fillMaxWidth()) {
+    repeat(NUM_COLUMNS) {
+      Box(modifier = Modifier.weight(0.5f)) {
+        GameCard(game = game)
+      }
+    }
+  }
 }

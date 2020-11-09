@@ -4,7 +4,11 @@ import androidx.compose.foundation.Text
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,7 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.ui.tooling.preview.Preview
-import dev.jamesbarr.sudoku.domain.*
+import dev.jamesbarr.sudoku.domain.CellPosition
+import dev.jamesbarr.sudoku.domain.IntBoard
+import dev.jamesbarr.sudoku.domain.SudokuBoard
+import dev.jamesbarr.sudoku.domain.isValidCell
+import dev.jamesbarr.sudoku.domain.num
+import dev.jamesbarr.sudoku.domain.tips
 import kotlin.math.pow
 
 const val SIZE = 3
@@ -24,7 +33,11 @@ fun Board(
   maskCells: Boolean = false,
   onCellClick: ((CellPosition) -> Unit)? = null
 ) {
-  Box(modifier = Modifier.border(1.dp, MaterialTheme.colors.background)) {
+  Box(
+    modifier = Modifier
+      .border(1.dp, MaterialTheme.colors.background)
+      .aspectRatio(1f)
+  ) {
     Grid(
       cellFactory = { blockRow, blockCol ->
         Box(
@@ -76,6 +89,12 @@ private fun Cell(
     else -> MaterialTheme.colors.primaryVariant
   }
 
+  val textStyle = if (masked && NUM_COLUMNS > 1) {
+    MaterialTheme.typography.body1
+  } else {
+    MaterialTheme.typography.h5
+  }
+
   Box(
     Modifier.aspectRatio(1f)
       .background(if (valid) Color.Transparent else MaterialTheme.colors.error.copy(alpha = 0.50f))
@@ -90,7 +109,7 @@ private fun Cell(
         Text(
           text = if (masked) "•" else num.toString(),
           color = cellTextColor,
-          style = MaterialTheme.typography.h5,
+          style = textStyle,
           modifier = Modifier.align(Alignment.Center)
         )
       } else if (!masked && tips.isNotEmpty()) {
