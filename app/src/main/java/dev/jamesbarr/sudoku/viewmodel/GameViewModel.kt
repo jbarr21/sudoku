@@ -6,14 +6,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import dev.jamesbarr.sudoku.domain.CellPosition
 import dev.jamesbarr.sudoku.domain.IntBoard
 import dev.jamesbarr.sudoku.domain.SudokuBoard
 import dev.jamesbarr.sudoku.domain.num
 import dev.jamesbarr.sudoku.repo.GameRepository
+import dev.jamesbarr.sudoku.repo.GameRepository.Companion.NUM_GAMES
+import dev.jamesbarr.sudoku.util.pmap
+import kotlinx.coroutines.*
+import java.time.Duration
+import java.time.Instant
 
 class GameViewModel(private val gameRepository: GameRepository) : ViewModel() {
 
+  var games by mutableStateOf(gameRepository.games)
+    private set
   var board by mutableStateOf<SudokuBoard>(gameRepository.game.board)
     private set
   var selectedCell by mutableStateOf(gameRepository.selectedCell)
@@ -26,8 +34,12 @@ class GameViewModel(private val gameRepository: GameRepository) : ViewModel() {
   val actions = listOf(
     "E" to this::toggleEditMode,
     "X" to this::clearCell,
-    "S" to this::solve
+    " " to this::solve
   )
+
+  init {
+    loadGames()
+  }
 
   fun startNewGame(gameId: Long) {
     isGameOver = false
@@ -105,6 +117,19 @@ class GameViewModel(private val gameRepository: GameRepository) : ViewModel() {
   fun saveState(board: SudokuBoard, selectedCell: CellPosition?) {
     gameRepository.game.board = board as IntBoard
     gameRepository.selectedCell = selectedCell
+  }
+
+  private fun loadGames() {
+    val start = Instant.now()
+    viewModelScope.launch(Dispatchers.IO) {
+      gameRepository.games = (0 until NUM_GAMES)
+        .pmap { gameRepository.generateGame(it.toLong()) }
+        .apply {
+          gameRepository.games = this
+          games = this
+          println("generated in: " + (Duration.between(start, Instant.now()).toMillis() / 1000f))
+        }
+    }
   }
 
   class Factory(context: Context) : ViewModelProvider.Factory {

@@ -1,17 +1,16 @@
 package dev.jamesbarr.sudoku.ui
 
-import androidx.compose.foundation.Text
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.ContextAmbient
 import androidx.navigation.NavController
 import androidx.ui.tooling.preview.Preview
-import dev.jamesbarr.sudoku.domain.GameDialog
 import dev.jamesbarr.sudoku.viewmodel.GameViewModel
 
 @Composable
@@ -22,15 +21,9 @@ fun GameUi(
 ) {
   Scaffold(
     topBar = {
-      TopAppBar(
-        title = { Text("Game #$gameId") },
-        contentColor = MaterialTheme.colors.onSurface,
-        backgroundColor = MaterialTheme.colors.primaryVariant,
-        navigationIcon = {
-          IconButton(onClick = { navController.popBackStack() }) {
-            Icon(asset = Icons.Default.ArrowBack)
-          }
-        },
+      SudokuTopAppBar(
+        title = "Game #${gameId + 1}",
+        navController = navController,
         actions = {
           IconButton(onClick = gameViewModel::restartGame) {
             Icon(asset = Icons.Default.Refresh)

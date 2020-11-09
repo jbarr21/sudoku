@@ -21,7 +21,8 @@ const val SIZE = 3
 fun Board(
   board: SudokuBoard = IntBoard(),
   selectedCell: CellPosition? = null,
-  onCellClick: (CellPosition) -> Unit = {}
+  maskCells: Boolean = false,
+  onCellClick: ((CellPosition) -> Unit)? = null
 ) {
   Box(modifier = Modifier.border(1.dp, MaterialTheme.colors.background)) {
     Grid(
@@ -41,6 +42,7 @@ fun Board(
                 selectedNum = selectedCell?.let { board.num(it.boardIndex) },
                 startValue = board.isStartingValue(pos),
                 valid = board.isValidCell(pos),
+                masked = maskCells,
                 onCellClick = onCellClick
               )
             }
@@ -60,7 +62,8 @@ private fun Cell(
   selectedNum: Int? = null,
   startValue: Boolean = false,
   valid: Boolean = true,
-  onCellClick: (CellPosition) -> Unit = {}
+  masked: Boolean = false,
+  onCellClick: ((CellPosition) -> Unit)? = null,
 ) {
   val cellBgColor = when {
     selected -> MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f)
@@ -80,17 +83,17 @@ private fun Cell(
     Box(
       modifier = Modifier.aspectRatio(1f)
         .border(0.5.dp, MaterialTheme.colors.onSurface.copy(0.25f))
-        .clickable(onClick = { onCellClick(pos) })
+        .ifTrue(onCellClick != null, Modifier.clickable(onClick = { onCellClick?.invoke(pos) }))
         .background(color = cellBgColor)
     ) {
       if (num != null && num > 0) {
         Text(
-          text = num.toString(),
+          text = if (masked) "•" else num.toString(),
           color = cellTextColor,
           style = MaterialTheme.typography.h5,
           modifier = Modifier.align(Alignment.Center)
         )
-      } else if (tips.isNotEmpty()) {
+      } else if (!masked && tips.isNotEmpty()) {
         Tips(tips = tips)
       } else {
         Text(
@@ -197,6 +200,19 @@ fun TipsPreviews() {
     Row {
       Cell(pos = pos, null, listOf(6, 9))
       Cell(pos = pos, tips = listOf(6, 9), selected = true)
+    }
+  }
+}
+
+@Preview(heightDp = 150)
+@Composable
+fun MaskedPreviews() {
+  val pos = CellPosition(0, 0, 0)
+  SudokuTheme(darkTheme = true) {
+    Row {
+      Cell(pos = pos, 0, masked = true)
+      Cell(pos = pos, null, masked = true)
+      Cell(pos = pos, null, selected = true, masked = true)
     }
   }
 }

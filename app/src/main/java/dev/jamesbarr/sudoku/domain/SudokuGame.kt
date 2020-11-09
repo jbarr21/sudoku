@@ -19,7 +19,7 @@ package dev.jamesbarr.sudoku.domain
 
 data class SudokuGame(
   var board: IntBoard,
-  val seed: Long
+  val id: Long
 ) {
 
   @Transient

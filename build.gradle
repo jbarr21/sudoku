@@ -2,6 +2,7 @@
 buildscript {
     ext {
         compose_version = '1.0.0-alpha06'
+        coroutines_version = '1.4.0'
     }
     ext.kotlin_version = "1.4.10"
     repositories {

@@ -1,4 +1,4 @@
-package dev.jamesbarr.sudoku.domain
+package dev.jamesbarr.sudoku.ui
 
 import androidx.compose.foundation.Text
 import androidx.compose.material.AlertDialog

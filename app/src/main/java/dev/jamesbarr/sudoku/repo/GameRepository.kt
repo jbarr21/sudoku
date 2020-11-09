@@ -6,14 +6,17 @@ import dev.jamesbarr.sudoku.domain.IntBoard
 import dev.jamesbarr.sudoku.domain.SudokuGame
 import dev.jamesbarr.sudoku.domain.SudokuSolver
 import kotlin.random.Random
+import kotlin.random.Random.Default.nextLong
 
 class GameRepository(context: Context) {
-
-  var game: SudokuGame = generateGame(0L)
+  var games: List<SudokuGame> = emptyList()
+  var game: SudokuGame = generateGame(0)
   var selectedCell: CellPosition? = null
 
-  fun generateGame(seed: Long = Random.nextLong()): SudokuGame {
+  fun generateGame(seed: Long = nextLong()): SudokuGame {
+    println("Generating $seed")
     val pair = SudokuSolver.generate(random = Random(seed))
+    println("Finished $seed")
     return SudokuGame(pair.first as IntBoard, seed).apply {
       solvedBoard = pair.second as IntBoard
     }
@@ -22,5 +25,9 @@ class GameRepository(context: Context) {
   fun startGame(gameId: Long): SudokuGame {
     game = generateGame(seed = gameId)
     return game
+  }
+
+  companion object {
+    const val NUM_GAMES = 20
   }
 }
