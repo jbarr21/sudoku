@@ -12,11 +12,8 @@ import dev.jamesbarr.sudoku.domain.IntBoard
 import dev.jamesbarr.sudoku.domain.SudokuBoard
 import dev.jamesbarr.sudoku.domain.num
 import dev.jamesbarr.sudoku.repo.GameRepository
-import dev.jamesbarr.sudoku.repo.GameRepository.Companion.NUM_GAMES
-import dev.jamesbarr.sudoku.util.pmap
-import kotlinx.coroutines.*
-import java.time.Duration
-import java.time.Instant
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class GameViewModel(private val gameRepository: GameRepository) : ViewModel() {
 
@@ -120,15 +117,10 @@ class GameViewModel(private val gameRepository: GameRepository) : ViewModel() {
   }
 
   private fun loadGames() {
-    val start = Instant.now()
+    val start = System.currentTimeMillis()
     viewModelScope.launch(Dispatchers.IO) {
-      gameRepository.games = (0 until NUM_GAMES)
-        .pmap { gameRepository.generateGame(it.toLong()) }
-        .apply {
-          gameRepository.games = this
-          games = this
-          println("generated in: " + (Duration.between(start, Instant.now()).toMillis() / 1000f))
-        }
+      games = gameRepository.loadGames()
+      println("generated in: ${(System.currentTimeMillis() - start) / 1000f}")
     }
   }
 

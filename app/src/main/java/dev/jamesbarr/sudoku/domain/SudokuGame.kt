@@ -17,6 +17,9 @@
 
 package dev.jamesbarr.sudoku.domain
 
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class SudokuGame(
   var board: IntBoard,
   val id: Long

@@ -17,12 +17,14 @@
 
 package dev.jamesbarr.sudoku.domain
 
+import com.squareup.moshi.JsonClass
 import dev.jamesbarr.sudoku.domain.SudokuBoard.Companion.BOARD_SIZE
 
+@JsonClass(generateAdapter = true)
 class IntBoard() : SudokuBoard {
 
-  // this used to be an IntArray, but we need a list for kotlinx.serialization
-  val grid = MutableList(BOARD_SIZE) { 0 }
+  // should be val, but Moshi assigns it. this used to be an IntArray, but we need a list for kotlinx.serialization
+  internal var grid = MutableList(BOARD_SIZE) { 0 }
 
   constructor(initGrid: IntArray) : this() {
     initGrid.forEachIndexed { index, i ->
