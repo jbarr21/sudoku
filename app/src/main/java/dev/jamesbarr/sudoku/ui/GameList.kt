@@ -12,6 +12,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.FloatingActionButton
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
@@ -48,8 +49,14 @@ fun GameList(
       )
     },
     floatingActionButton = {
-      FloatingActionButton(onClick = { navController.launchGame(nextLong(1, 1000)) }) {
-        Icon(asset = vectorResource(id = R.drawable.ic_casino))
+      FloatingActionButton(
+        backgroundColor = MaterialTheme.colors.primary,
+        onClick = { navController.launchGame(nextLong(1, 1000)) }
+      ) {
+        Icon(
+          asset = vectorResource(id = R.drawable.ic_casino),
+          tint = MaterialTheme.colors.onSurface
+        )
       }
     },
     bodyContent = {

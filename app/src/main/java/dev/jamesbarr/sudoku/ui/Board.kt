@@ -79,14 +79,16 @@ private fun Cell(
   onCellClick: ((CellPosition) -> Unit)? = null,
 ) {
   val cellBgColor = when {
-    selected -> MaterialTheme.colors.primaryVariant.copy(alpha = 0.5f)
-    num != null && num == selectedNum -> MaterialTheme.colors.primaryVariant.copy(alpha = 0.25f)
+    selected -> MaterialTheme.colors.primaryVariant.copy(alpha = 0.66f)
+    num != null && num == selectedNum -> MaterialTheme.colors.primaryVariant.copy(alpha = 0.33f)
     else -> Color.Transparent
   }
 
   val cellTextColor = when {
-    startValue -> MaterialTheme.colors.onSurface
-    else -> MaterialTheme.colors.primaryVariant
+    startValue -> with(MaterialTheme.colors.onSurface) {
+      copy(red = red * 0.66f, green = green * 0.66f, blue = blue * 0.66f)
+    }
+    else -> MaterialTheme.colors.primary
   }
 
   val textStyle = if (masked && NUM_COLUMNS > 1) {

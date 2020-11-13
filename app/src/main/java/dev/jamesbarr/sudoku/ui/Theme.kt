@@ -13,7 +13,7 @@ private val LightColorPalette = lightColors(primaryVariant = Color(0xff1da9da))
 @Composable
 fun SudokuTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
   val colors = if (darkTheme)
-    DarkColorPalette.copy(secondary = DarkColorPalette.primary)
+    DarkColorPalette
   else
     LightColorPalette
   MaterialTheme(
