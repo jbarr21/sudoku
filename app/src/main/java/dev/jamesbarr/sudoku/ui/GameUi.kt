@@ -8,9 +8,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import androidx.ui.tooling.preview.Preview
 import dev.jamesbarr.sudoku.viewmodel.GameViewModel
 
 @Composable
@@ -26,7 +26,7 @@ fun GameUi(
         navController = navController,
         actions = {
           IconButton(onClick = gameViewModel::restartGame) {
-            Icon(asset = Icons.Default.Refresh)
+            Icon(Icons.Default.Refresh, contentDescription = null)
           }
         }
       )
@@ -65,8 +65,8 @@ fun GameUi(
 fun GameUiPreview() {
   SudokuTheme(darkTheme = true) {
     GameUi(
-      gameViewModel = GameViewModel.Factory(ContextAmbient.current).create(GameViewModel::class.java),
-      navController = NavController(ContextAmbient.current)
+      gameViewModel = GameViewModel.Factory(AmbientContext.current).create(GameViewModel::class.java),
+      navController = NavController(AmbientContext.current)
     )
   }
 }

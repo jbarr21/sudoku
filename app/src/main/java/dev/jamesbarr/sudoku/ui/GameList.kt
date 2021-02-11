@@ -1,6 +1,6 @@
 package dev.jamesbarr.sudoku.ui
 
-import androidx.compose.foundation.Text
+import androidx.compose.foundation.Icon
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,21 +10,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumnFor
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ContextAmbient
+import androidx.compose.ui.platform.AmbientContext
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.navigate
-import androidx.ui.tooling.preview.Preview
 import dev.jamesbarr.sudoku.R
 import dev.jamesbarr.sudoku.viewmodel.GameViewModel
 import kotlin.random.Random.Default.nextLong
@@ -43,7 +43,7 @@ fun GameList(
         navController = navController,
         actions = {
           IconButton(onClick = { navController.navigate(Screen.Settings.route) }) {
-            Icon(asset = Icons.Default.Settings)
+            Icon(Icons.Default.Settings)
           }
         }
       )
@@ -53,8 +53,7 @@ fun GameList(
         backgroundColor = MaterialTheme.colors.primary,
         onClick = { navController.launchGame(nextLong(1, 1000)) }
       ) {
-        Icon(
-          asset = vectorResource(id = R.drawable.ic_casino),
+        Icon(imageVector = vectorResource(id = R.drawable.ic_casino),
           tint = MaterialTheme.colors.onSurface
         )
       }
@@ -113,8 +112,8 @@ private fun NavController.launchGame(gameId: Long) = navigate(Screen.Game.routeF
 fun GameListPreview() {
   SudokuTheme(darkTheme = true) {
     GameList(
-      gameViewModel = GameViewModel.Factory(ContextAmbient.current).create(GameViewModel::class.java),
-      navController = NavController(ContextAmbient.current)
+      gameViewModel = GameViewModel.Factory(AmbientContext.current).create(GameViewModel::class.java),
+      navController = NavController(AmbientContext.current)
     )
   }
 }
